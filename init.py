@@ -142,7 +142,7 @@ async def on_voice_state_update(member,before,after):
         print(f"[DEBUG] {str(member)} has left voice channel")
         calculateTime(member)
 
-
+@commands.has_role('Savitar')
 @client.command()
 async def addUsers(ctx):
     for member in ctx.guild.members:
@@ -181,6 +181,6 @@ async def on_message(package):
     await client.process_commands(package)
 
 
-client.run("ODUyOTQ0OTkzMDU2MzI1NzE1.YMOM7Q.MJ6yAmQB0-_3WW1pPTxQAKJndJ8")
+client.run("ODUyOTQ0OTkzMDU2MzI1NzE1.YMOM7Q.cyDE1dDAOTMoTX81Fj__AigrPeo")
 
 ##
