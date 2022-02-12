@@ -77,7 +77,6 @@ def addTsivp(member,guild,tsivp):
     collection = MongoDBConnect(guild)
     collection.update_one({"name": str(member)},{"$set":{"tsiv": tsivp}})
 
-
 def calculateTime(member):
     cwd = os.getcwd()
     with open(f"{cwd}/vcTEMP/{member.id}.txt","r") as tempVC:
@@ -181,6 +180,6 @@ async def on_message(package):
     await client.process_commands(package)
 
 
-client.run("ODUyOTQ0OTkzMDU2MzI1NzE1.YMOM7Q.cyDE1dDAOTMoTX81Fj__AigrPeo")
+client.run("ODUyOTQ0OTkzMDU2MzI1NzE1.YMOM7Q._F8B8cWm5i3qcr5-4u9izVisnaY")
 
 ##
