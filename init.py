@@ -127,7 +127,7 @@ async def on_ready():
 async def on_member_join(member):
     print(member)
     print(f"[DEBUG] Performing user check on {member}")
-    if isUser(member) == None:
+    if isUser(member.id) == None:
         print("Imporing user to database")
         insertMongoDB(member)
 
