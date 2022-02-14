@@ -77,21 +77,37 @@ def addTsivp(member,guild,tsivp):
     collection = MongoDBConnect(guild)
     collection.update_one({"name": member.id},{"$set":{"tsiv": tsivp}})
 
-def calculateTime(member):
-    cwd = os.getcwd()
-    with open(f"{cwd}/vcTEMP/{member.id}.txt","r") as tempVC:
-        time_spent = tempVC.read()
-        date_time_obj = datetime.strptime(time_spent, '%Y-%m-%d %H:%M:%S.%f')
+
+def ElapseTimes(voiceLastDelta):
+        date_time_obj = datetime.strptime(voiceLastDelta, '%Y-%m-%d %H:%M:%S.%f')
         timeNow = getDate()
         elapsed = timeNow - date_time_obj
         elapsed_new = round(elapsed.total_seconds())
-        tsiv = getdataonUser("name",member,"tsiv")
-        new_tsiv = elapsed_new + tsiv
+        return elapsed_new
 
 
-        addTsivp(member,member.guild.id,new_tsiv)
 
-    os.remove(f"{cwd}/vcTEMP/{member.id}.txt")
+def calculateTime(member):
+    cwd = os.getcwd()
+
+
+    with open(f"{cwd}/vcTEMP/{member.id}.txt","r") as tempVC:
+        time_spent = tempVC.read()
+        elapsed_new = ElapseTimes(time_spent)
+
+        addTsivp(member,member.guild.id,elapsed_new)
+
+ 
+    #os.remove(f"{cwd}/vcTEMP/{member.id}.txt")
+
+
+
+def fetchLast(member):
+    with open(f"vcTEMP/{member}.txt","r") as readVC:
+        print(member)
+        time_spent = readVC.read()
+        elapsed = ElapseTimes(time_spent)
+        return elapsed
 
 
 def getUserTSIV(user,server_id):
@@ -150,6 +166,7 @@ async def on_voice_state_update(member,before,after):
         print(f"[DEBUG] {str(member)} has left voice channel")
         calculateTime(member)
 
+
 @commands.has_role('Savitar + SOC')
 @client.command()
 async def addUsers(ctx):
@@ -168,12 +185,15 @@ async def userstats(ctx,member: discord.Member):
     member_pfp = member.avatar_url
     member_TSIV = getUserTSIV(member.id,ctx.guild.id)
     member_TSIV =  str(timedelta(seconds=member_TSIV))
+    last_activity = fetchLast(str(member.id))
+    last_activity = str(timedelta(seconds=last_activity))
+
     color_scheme = {"offline":0x808080,"online":0x00ff00,"dnd":0xff0000,"idle":0xffff00}
     colorChoice = color_scheme[str(member_status)]
     embed=discord.Embed(title=f"$~User@{member}", description=f"User is currently { member_status }", color=colorChoice)
     embed.set_image(url=member_pfp)
     embed.add_field(name="User TSIV", value=f"{member_TSIV}", inline=True)
-    embed.add_field(name="User CS", value="undefined", inline=True)
+    embed.add_field(name="User last voice activity", value=f"{last_activity}", inline=True)
     embed.set_footer(text="//END")
     await ctx.send(embed=embed)
 
@@ -213,7 +233,7 @@ async def on_message(package):
     await client.process_commands(package)
 
 
-CORE_KEY = input("CORE_KEY: ")
-client.run(CORE_KEY)
+#CORE_KEY = input("CORE_KEY: ")
+client.run("ODQwMDYwNDY0ODI5NTYyODkw.YJStRg.Zs0IQPzhfjVoH2iiUL1WV4ZBmVE")
 
 ##
