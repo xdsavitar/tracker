@@ -25,7 +25,7 @@ def MongoDBConnect(server_id):
 
 def isUser(name,server_id):
     collection = MongoDBConnect(server_id)
-    for result in collection.find({"name":str(name)}):
+    for result in collection.find({"name":name}):
         return result
 
 
@@ -41,19 +41,19 @@ def getdataonUser(dataType,member,searchQuery):
     print(member)
     collection = MongoDBConnect(str(member.guild.id))
 
-    for resultCallback in collection.find({f"{dataType}": str(member) }):
+    for resultCallback in collection.find({f"{dataType}": member.id }):
         return resultCallback[str(searchQuery)]
 
 
 def massDumpUsers(member,server_id):
     if isUser(member,server_id) == None:
 
-        collection = MongoDBConnect(str(member.guild.id))
+        collection = MongoDBConnect(str(server_id))
         date = getDate()
         userToken = generateToken()
-        insert_block = {"name": str(member),"join_date": date,"tsiv": 0,"xp": 0,"userUniToken": userToken}
+        insert_block = {"name": member,"join_date": date,"tsiv": 0,"xp": 0,"userUniToken": userToken}
         collection.insert_one(insert_block)
-        print(f"[DEBUG] Dumped users to {member.guild.name}")
+        print(f"[DEBUG] Dumped users")
     else:
         print("Already in database")
 
@@ -75,7 +75,7 @@ def createTrackerfile(member):
 
 def addTsivp(member,guild,tsivp):
     collection = MongoDBConnect(guild)
-    collection.update_one({"name": str(member)},{"$set":{"tsiv": tsivp}})
+    collection.update_one({"name": member.id},{"$set":{"tsiv": tsivp}})
 
 def calculateTime(member):
     cwd = os.getcwd()
@@ -96,18 +96,19 @@ def calculateTime(member):
 
 def getUserTSIV(user,server_id):
     collection = MongoDBConnect(server_id)
-    for resultCallback in collection.find({"name":str(user)}):
+    for resultCallback in collection.find({"name":user}):
         return resultCallback["tsiv"]
 
 
 
 def addMeMongo(member,server_id):
 
-    if isUser(str(member),server_id) == None:
+    if isUser(member.id,server_id) == None:
+        print(member.id)
         collection = MongoDBConnect(server_id)
         date = getDate()
         userToken = generateToken()
-        insert_block = {"name": str(member),"join_date": date,"tsiv": 0,"xp": 0,"userUniToken": userToken}
+        insert_block = {"name": member.id,"join_date": date,"tsiv": 0,"xp": 0,"userUniToken": userToken}
         collection.insert_one(insert_block)
     else:
         print("User already in db")
@@ -131,6 +132,14 @@ async def on_member_join(member):
         insertMongoDB(member)
 
 
+
+
+@client.event
+async def on_guild_channel_delete(channel):
+    print(channel)
+
+
+
 @client.event
 async def on_voice_state_update(member,before,after):
     if before.channel is None and after.channel is not None:
@@ -141,25 +150,23 @@ async def on_voice_state_update(member,before,after):
         print(f"[DEBUG] {str(member)} has left voice channel")
         calculateTime(member)
 
-@commands.has_role('Savitar')
+@commands.has_role('Savitar + SOC')
 @client.command()
 async def addUsers(ctx):
     for member in ctx.guild.members:
-        massDumpUsers(member,ctx.guild.id)
-        
+        massDumpUsers(member.id,ctx.guild.id)
 
 
-@commands.has_role('Savitar')
+@commands.has_role('Savitar + SOC')
 @client.command()
 async def addMe(ctx):
     addMeMongo(ctx.message.author,ctx.guild.id)
 
-@commands.has_role('Savitar')
 @client.command()
 async def userstats(ctx,member: discord.Member):
     member_status = member.status
     member_pfp = member.avatar_url
-    member_TSIV = getUserTSIV(member,ctx.guild.id)
+    member_TSIV = getUserTSIV(member.id,ctx.guild.id)
     member_TSIV =  str(timedelta(seconds=member_TSIV))
     color_scheme = {"offline":0x808080,"online":0x00ff00,"dnd":0xff0000,"idle":0xffff00}
     colorChoice = color_scheme[str(member_status)]
@@ -172,6 +179,32 @@ async def userstats(ctx,member: discord.Member):
 
 
 
+@client.command()
+async def meme(ctx):
+    request = requests.get("https://meme-api.herokuapp.com/gimme")
+    data = request.json()
+    meme_url = data["url"]
+    title = data["title"]
+    ups = data["ups"]
+    embed=discord.Embed(title=f"{title}")
+    embed.set_image(url=meme_url)
+    embed.set_footer(text=f"Upvotes: {ups}")
+    await ctx.send(embed=embed)
+
+
+##Joke commands
+
+@client.command()
+async def whoasked(ctx,user):
+    await ctx.send(f"No one asked {user}")
+
+
+##
+
+
+
+
+
 @client.event
 async def on_message(package):
 
@@ -180,6 +213,7 @@ async def on_message(package):
     await client.process_commands(package)
 
 
-client.run("ODUyOTQ0OTkzMDU2MzI1NzE1.YMOM7Q._F8B8cWm5i3qcr5-4u9izVisnaY")
+CORE_KEY = input("CORE_KEY: ")
+client.run(CORE_KEY)
 
 ##
