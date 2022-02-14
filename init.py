@@ -9,6 +9,11 @@ from datetime import timedelta
 import string
 import random
 import os
+import colorama
+from colorama import Fore,Back,Style
+
+colorama.init()
+
 
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
@@ -135,16 +140,17 @@ def addMeMongo(member,server_id):
 
 @client.event
 async def on_ready():
-    print("[DEBUG] Client up...")
+    print(Fore.GREEN + "[DEBUG]: Key Accepted, Prompting")
+    print(Fore.GREEN + "[DEBUG] Client up...")
     await client.change_presence(status=discord.Status.offline)
 
 
 @client.event
 async def on_member_join(member):
     print(member)
-    print(f"[DEBUG] Performing user check on {member}")
+    print(f"{Fore.YELLOW}[DEBUG] Performing user check on {member}")
     if isUser(member.id) == None:
-        print("Imporing user to database")
+        print(Fore.RED + "Imporing user to database")
         insertMongoDB(member)
 
 
@@ -159,11 +165,11 @@ async def on_guild_channel_delete(channel):
 @client.event
 async def on_voice_state_update(member,before,after):
     if before.channel is None and after.channel is not None:
-        print(f"[DEBUG] {str(member)} has joined voice channel")
+        print(f"{Fore.GREEN} [DEBUG] {str(member)} has joined voice channel")
         createTrackerfile(member.id)
 
     if before.channel is not None and after.channel is None:
-        print(f"[DEBUG] {str(member)} has left voice channel")
+        print(f"{Fore.RED}[DEBUG] {str(member)} has left voice channel")
         calculateTime(member)
 
 
@@ -193,7 +199,7 @@ async def userstats(ctx,member: discord.Member):
     embed=discord.Embed(title=f"$~User@{member}", description=f"User is currently { member_status }", color=colorChoice)
     embed.set_image(url=member_pfp)
     embed.add_field(name="User TSIV", value=f"{member_TSIV}", inline=True)
-    embed.add_field(name="User last voice activity", value=f"{last_activity}", inline=True)
+    embed.add_field(name="User last voice activity", value=f"{last_activity} Ago", inline=True)
     embed.set_footer(text="//END")
     await ctx.send(embed=embed)
 
