@@ -123,9 +123,7 @@ def fetchLast(member):
         with open(f"vcTEMP/{member}.txt","r") as readVC:
             print(member)
             time_spent = readVC.read()
-            elapsed = ElapseTimes(time_spent)
-
-            last_activity = elapsed
+            last_activity = ElapseTimes(time_spent)
             last_activity = str(timedelta(seconds=last_activity))            
 
             return elapsed
@@ -244,7 +242,7 @@ async def userstats(ctx,member: discord.Member):
     embed=discord.Embed(title=f"$~User@{member}", description=f"User is currently { member_status }", color=colorChoice)
     embed.set_image(url=member_pfp)
     embed.add_field(name="User TSIV", value=f"{member_TSIV}", inline=True)
-    embed.add_field(name="User last voice activity", value=f"{fetchLast(member.id)} Ago", inline=True)
+    embed.add_field(name="User last voice activity", value=f" T-{fetchLast(member.id)}", inline=True)
     embed.set_footer(text="//END")
     await ctx.send(embed=embed)
 
