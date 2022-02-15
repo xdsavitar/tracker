@@ -159,11 +159,11 @@ def loadAllServers():
         Server_Id_List.append(guild.id)
 
 
-@tasks.loop(seconds=2)
-async def job():
+#@tasks.loop(seconds=2)
+#async def job():
     
-    for guild_id in Server_Id_List:
-        collection = MongoDBConnect(guild_id)
+    #for guild_id in Server_Id_List:
+        #collection = MongoDBConnect(guild_id)
         
 
 
@@ -178,9 +178,9 @@ async def on_ready():
     print(Fore.GREEN + "[DEBUG] Client up...")
     print(Fore.YELLOW + "[PROCCESS]: Ateempting to start a job.")
     job.start()
-    print(Fore.GREEN + "[PROCCESS]: Job started Successfully.")
-    print(Fore.GREEN + "[PROCCESS]: Loading active servers...")
-    loadAllServers()
+    #print(Fore.GREEN + "[PROCCESS]: Job started Successfully.")
+    #print(Fore.GREEN + "[PROCCESS]: Loading active servers...")
+    #loadAllServers()
     print(Fore.GREEN + "[PROCCESS]: Servers loaded.")
     await client.change_presence(status=discord.Status.offline)
 
