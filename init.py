@@ -126,11 +126,10 @@ def fetchLast(member):
             last_activity = ElapseTimes(time_spent)
             last_activity = str(timedelta(seconds=last_activity))            
 
-            return elapsed
+            return last_activity
 
     except FileNotFoundError:
-        elapsed = "Unknown"
-        return elapsed
+        return "Unknown"
 
 def getUserTSIV(user,server_id):
     collection = MongoDBConnect(server_id)
