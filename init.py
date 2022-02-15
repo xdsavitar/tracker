@@ -124,6 +124,10 @@ def fetchLast(member):
             print(member)
             time_spent = readVC.read()
             elapsed = ElapseTimes(time_spent)
+
+            last_activity = elapsed
+            last_activity = str(timedelta(seconds=last_activity))            
+
             return elapsed
 
     except FileNotFoundError:
@@ -235,15 +239,12 @@ async def userstats(ctx,member: discord.Member):
     member_pfp = member.avatar_url
     member_TSIV = getUserTSIV(member.id,ctx.guild.id)
     member_TSIV =  str(timedelta(seconds=member_TSIV))
-    last_activity = fetchLast(str(member.id))
-    last_activity = str(timedelta(seconds=last_activity))
-
     color_scheme = {"offline":0x808080,"online":0x00ff00,"dnd":0xff0000,"idle":0xffff00}
     colorChoice = color_scheme[str(member_status)]
     embed=discord.Embed(title=f"$~User@{member}", description=f"User is currently { member_status }", color=colorChoice)
     embed.set_image(url=member_pfp)
     embed.add_field(name="User TSIV", value=f"{member_TSIV}", inline=True)
-    embed.add_field(name="User last voice activity", value=f"{last_activity} Ago", inline=True)
+    embed.add_field(name="User last voice activity", value=f"{fetchLast(member.id)} Ago", inline=True)
     embed.set_footer(text="//END")
     await ctx.send(embed=embed)
 
