@@ -177,7 +177,7 @@ async def on_ready():
     print(Fore.GREEN + "[DEBUG]: Key Accepted, Prompting")
     print(Fore.GREEN + "[DEBUG] Client up...")
     print(Fore.YELLOW + "[PROCCESS]: Ateempting to start a job.")
-    job.start()
+    #job.start()
     #print(Fore.GREEN + "[PROCCESS]: Job started Successfully.")
     #print(Fore.GREEN + "[PROCCESS]: Loading active servers...")
     #loadAllServers()
