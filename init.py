@@ -11,6 +11,17 @@ import random
 import os
 import colorama
 from colorama import Fore,Back,Style
+import threading
+import time
+from discord.ext import tasks
+
+#Global Variables
+
+Server_Id_List = []
+
+#
+
+
 
 colorama.init()
 
@@ -132,7 +143,30 @@ def addMeMongo(member,server_id):
         insert_block = {"name": member.id,"join_date": date,"tsiv": 0,"xp": 0,"userUniToken": userToken}
         collection.insert_one(insert_block)
     else:
+       
         print("User already in db")
+
+
+
+def createDailyData():
+    with open(f"DataOnUsers/{str(getDate)}.txt","w+") as writableData:
+        write_block = f"{user_name}: {TSIV}\n"
+        writableData.write(write_block)
+
+def loadAllServers():
+    active_servers = client.guilds
+    for guild in active_servers:
+        Server_Id_List.append(guild.id)
+
+
+@tasks.loop(seconds=2)
+async def job():
+    
+    for guild_id in Server_Id_List:
+        collection = MongoDBConnect(guild_id)
+        
+
+
 
 #
 
@@ -142,6 +176,12 @@ def addMeMongo(member,server_id):
 async def on_ready():
     print(Fore.GREEN + "[DEBUG]: Key Accepted, Prompting")
     print(Fore.GREEN + "[DEBUG] Client up...")
+    print(Fore.YELLOW + "[PROCCESS]: Ateempting to start a job.")
+    job.start()
+    print(Fore.GREEN + "[PROCCESS]: Job started Successfully.")
+    print(Fore.GREEN + "[PROCCESS]: Loading active servers...")
+    loadAllServers()
+    print(Fore.GREEN + "[PROCCESS]: Servers loaded.")
     await client.change_presence(status=discord.Status.offline)
 
 
@@ -149,7 +189,7 @@ async def on_ready():
 async def on_member_join(member):
     print(member)
     print(f"{Fore.YELLOW}[DEBUG] Performing user check on {member}")
-    if isUser(member.id) == None:
+    if isUser(member.id,member.guild.id) == None:
         print(Fore.RED + "Imporing user to database")
         insertMongoDB(member)
 
@@ -238,8 +278,7 @@ async def on_message(package):
 
     await client.process_commands(package)
 
-
-CORE_KEY = input("CORE_KEY: ")
-client.run(CORE_KEY)
+#CORE_KEY = input("CORE_KEY: ")
+client.run("ODQwMDYwNDY0ODI5NTYyODkw.YJStRg.p3mwqJ0fA6Rqbg34RZHCTU0KlnM")
 
 ##
