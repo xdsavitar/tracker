@@ -119,11 +119,16 @@ def calculateTime(member):
 
 
 def fetchLast(member):
-    with open(f"vcTEMP/{member}.txt","r") as readVC:
-        print(member)
-        time_spent = readVC.read()
-        elapsed = ElapseTimes(time_spent)
-        return elapsed
+
+    try:
+        with open(f"vcTEMP/{member}.txt","r") as readVC:
+            print(member)
+            time_spent = readVC.read()
+            elapsed = ElapseTimes(time_spent)
+            return elapsed
+
+    except FileNotFoundError:
+        return "Unknown"
 
 
 def getUserTSIV(user,server_id):
