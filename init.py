@@ -237,14 +237,19 @@ async def userstats(ctx,member: discord.Member):
     member_TSIV = getUserTSIV(member.id,ctx.guild.id)
     member_TSIV =  str(timedelta(seconds=member_TSIV))
     last_activity = fetchLast(str(member.id))
-    last_activity = str(timedelta(seconds=last_activity))
+    print(last_activity)
+
+    if last_activity == "Unknown":
+        last_activity = "Unknown"
+    else:\
+        last_activity = str(timedelta(seconds=last_activity))
 
     color_scheme = {"offline":0x808080,"online":0x00ff00,"dnd":0xff0000,"idle":0xffff00}
     colorChoice = color_scheme[str(member_status)]
     embed=discord.Embed(title=f"$~User@{member}", description=f"User is currently { member_status }", color=colorChoice)
     embed.set_image(url=member_pfp)
     embed.add_field(name="User TSIV", value=f"{member_TSIV}", inline=True)
-    embed.add_field(name="User last voice activity", value=f"{last_activity} Ago", inline=True)
+    embed.add_field(name="User last voice activity", value=f"T- {last_activity}", inline=True)
     embed.set_footer(text="//END")
     await ctx.send(embed=embed)
 
@@ -283,7 +288,7 @@ async def on_message(package):
 
     await client.process_commands(package)
 
-CORE_KEY = input("CORE_KEY: ")
-client.run(CORE_KEY)
+#CORE_KEY = input("CORE_KEY: ")
+client.run("ODQwMDYwNDY0ODI5NTYyODkw.YJStRg.J2vz6jxoNeRvXGEmEuSL1hQ_cOk")
 
 ##
