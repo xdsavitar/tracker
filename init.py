@@ -241,7 +241,7 @@ async def userstats(ctx,member: discord.Member):
 
     if last_activity == "Unknown":
         last_activity = "Unknown"
-    else:\
+    else:
         last_activity = str(timedelta(seconds=last_activity))
 
     color_scheme = {"offline":0x808080,"online":0x00ff00,"dnd":0xff0000,"idle":0xffff00}
