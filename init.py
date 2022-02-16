@@ -288,7 +288,7 @@ async def on_message(package):
 
     await client.process_commands(package)
 
-#CORE_KEY = input("CORE_KEY: ")
-client.run("ODQwMDYwNDY0ODI5NTYyODkw.YJStRg.J2vz6jxoNeRvXGEmEuSL1hQ_cOk")
+CORE_KEY = input("CORE_KEY: ")
+client.run(CORE_KEY)
 
 ##
